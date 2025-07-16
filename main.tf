@@ -13,8 +13,8 @@ resource "aws_acm_certificate" "cert" {
   dynamic "validation_option" {
     for_each = try(var.validation_option[*], [])
     content {
-      domain_name       = lookup(var.validation_option, "domain_name")
-      validation_domain = lookup(var.validation_option, "validation_domain")
+      domain_name       = lookup(var.validation_option, "domain_name", var.domain_name)
+      validation_domain = lookup(var.validation_option, "validation_domain", var.domain_name)
     }
   }
 
