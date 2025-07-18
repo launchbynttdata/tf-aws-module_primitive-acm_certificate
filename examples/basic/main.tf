@@ -1,5 +1,3 @@
-
-
 module "aws_acm_certificate" {
   source                    = "../.."
   domain_name               = var.domain_name

@@ -36,7 +36,7 @@
 | <a name="input_route53_zone_id"></a> [route53\_zone\_id](#input\_route53\_zone\_id) | The Route53 zone ID where the certificate will be validated. | `string` | `""` | no |
 | <a name="input_key_algorithm"></a> [key\_algorithm](#input\_key\_algorithm) | The key algorithm to use for the certificate. Default is 'RSA\_2048'. | `string` | `"RSA_2048"` | no |
 | <a name="input_validation_method"></a> [validation\_method](#input\_validation\_method) | The validation method for the certificate. Default is 'DNS'. | `string` | `"DNS"` | no |
-| <a name="input_options"></a> [options](#input\_options) | Options for the ACM certificate, such as certificate transparency logging preference. | `map(string)` | <pre>{<br/>  "certificate_transparency_logging_preference": "ENABLED"<br/>}</pre> | no |
+| <a name="input_options"></a> [options](#input\_options) | Options for the ACM certificate, such as certificate transparency logging preference. | `map(string)` | <pre>{<br/>  "certificate_transparency_logging_preference": "DISABLED"<br/>}</pre> | no |
 | <a name="input_validation_option"></a> [validation\_option](#input\_validation\_option) | A map of validation options for the certificate, such as DNS records. | `map(string)` | `null` | no |
 | <a name="input_subject_alternative_names"></a> [subject\_alternative\_names](#input\_subject\_alternative\_names) | A list of subject alternative names for the certificate. | `list(string)` | `[]` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | A map of tags to assign to the resource. | `map(string)` | `{}` | no |

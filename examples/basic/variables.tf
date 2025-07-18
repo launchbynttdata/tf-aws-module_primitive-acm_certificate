@@ -53,7 +53,7 @@ variable "options" {
   description = "Options for the ACM certificate, such as certificate transparency logging preference."
   type        = map(string)
   default = {
-    "certificate_transparency_logging_preference" = "ENABLED"
+    "certificate_transparency_logging_preference" = "DISABLED"
   }
   validation {
     condition     = contains(keys(var.options), "certificate_transparency_logging_preference")
