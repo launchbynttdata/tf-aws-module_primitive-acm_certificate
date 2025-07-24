@@ -34,7 +34,7 @@ variable "key_algorithm" {
   type        = string
   default     = "RSA_2048"
   validation {
-    condition     = var.key_algorithm == "RSA_2048" || var.key_algorithm == "EC_prime256v1" || var.key_algorithm == "EC_secp384r1" || var.key_algorithm == "EC_secp521r1"
+    condition     = contains(["RSA_2048", "EC_prime256v1", "EC_secp384r1", "EC_secp521r1"], var.key_algorithm)
     error_message = "Key algorithm must be one of 'RSA_2048', 'EC_prime256v1', 'EC_secp384r1', or 'EC_secp521r1'."
   }
 }
