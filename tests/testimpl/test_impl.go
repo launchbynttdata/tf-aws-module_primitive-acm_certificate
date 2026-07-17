@@ -7,6 +7,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/acm"
+	acmtypes "github.com/aws/aws-sdk-go-v2/service/acm/types"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/launchbynttdata/lcaf-component-terratest/types"
@@ -71,6 +72,36 @@ func TestComposableComplete(t *testing.T, ctx types.TestContext) {
 		expectedSANs := []string{"www.terratest.sandbox.launch.nttdata.com", "terratest.sandbox.launch.nttdata.com"}
 		assert.ElementsMatch(t, expectedSANs, out.Certificate.SubjectAlternativeNames, "SANs do not match!")
 	})
+}
+
+func TestComposableCompleteReadOnly(t *testing.T, ctx types.TestContext) {
+	awsACMClient := acm.NewFromConfig(GetAWSConfig(t))
+	certificateArn := terraform.Output(t, ctx.TerratestTerraformOptions(), "certificate_arn")
+
+	out, err := awsACMClient.DescribeCertificate(context.TODO(), &acm.DescribeCertificateInput{
+		CertificateArn: aws.String(certificateArn),
+	})
+	require.NoError(t, err, describeCertificateError)
+	require.NotNil(t, out.Certificate, certificateNotExist)
+
+	cert := out.Certificate
+	assert.Equal(t, certificateArn, *cert.CertificateArn)
+	assert.Equal(t, "terratest.sandbox.launch.nttdata.com", *cert.DomainName)
+	assert.Equal(t, acmtypes.CertificateStatusIssued, cert.Status)
+
+	require.NotEmpty(t, cert.DomainValidationOptions, "expected domain validation options")
+	assert.Equal(t, acmtypes.ValidationMethodDns, cert.DomainValidationOptions[0].ValidationMethod)
+
+	tagsOut, err := awsACMClient.ListTagsForCertificate(context.TODO(), &acm.ListTagsForCertificateInput{
+		CertificateArn: aws.String(certificateArn),
+	})
+	require.NoError(t, err)
+
+	tagMap := make(map[string]string, len(tagsOut.Tags))
+	for _, tag := range tagsOut.Tags {
+		tagMap[*tag.Key] = *tag.Value
+	}
+	assert.Equal(t, "terratest", tagMap["environment"])
 }
 
 func GetAWSACMClient(t *testing.T) *acm.Client {
