@@ -92,8 +92,13 @@ func TestComposableCompleteReadOnly(t *testing.T, ctx types.TestContext) {
 	require.NotEmpty(t, cert.DomainValidationOptions, "expected domain validation options")
 	assert.Equal(t, acmtypes.ValidationMethodDns, cert.DomainValidationOptions[0].ValidationMethod)
 
-	tagMap := make(map[string]string, len(cert.Tags))
-	for _, tag := range cert.Tags {
+	tagsOut, err := awsACMClient.ListTagsForCertificate(context.TODO(), &acm.ListTagsForCertificateInput{
+		CertificateArn: aws.String(certificateArn),
+	})
+	require.NoError(t, err)
+
+	tagMap := make(map[string]string, len(tagsOut.Tags))
+	for _, tag := range tagsOut.Tags {
 		tagMap[*tag.Key] = *tag.Value
 	}
 	assert.Equal(t, "terratest", tagMap["environment"])
