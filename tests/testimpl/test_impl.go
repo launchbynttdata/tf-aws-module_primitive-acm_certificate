@@ -27,7 +27,7 @@ func TestComposableComplete(t *testing.T, ctx types.TestContext) {
 	awsRegion := awsConfig.Region
 
 	t.Run("TestIsDeployed", func(t *testing.T) {
-		certificateArn := terraform.Output(t, ctx.TerratestTerraformOptions(), "certificate_arn")
+		certificateArn := terraform.OutputContext(t, context.Background(), ctx.TerratestTerraformOptions(), "certificate_arn")
 		t.Logf("Looking for certificate ARN: %s in region: %s", certificateArn, awsRegion)
 
 		out, err := awsACMClient.DescribeCertificate(context.TODO(), &acm.DescribeCertificateInput{
@@ -45,7 +45,7 @@ func TestComposableComplete(t *testing.T, ctx types.TestContext) {
 	})
 
 	t.Run("TestCommonNameisCorrect", func(t *testing.T) {
-		certificateArn := terraform.Output(t, ctx.TerratestTerraformOptions(), "certificate_arn")
+		certificateArn := terraform.OutputContext(t, context.Background(), ctx.TerratestTerraformOptions(), "certificate_arn")
 		out, err := awsACMClient.DescribeCertificate(context.TODO(), &acm.DescribeCertificateInput{
 			CertificateArn: aws.String(certificateArn),
 		})
@@ -59,7 +59,7 @@ func TestComposableComplete(t *testing.T, ctx types.TestContext) {
 	})
 
 	t.Run("TestSANsAreCorrect", func(t *testing.T) {
-		certificateArn := terraform.Output(t, ctx.TerratestTerraformOptions(), "certificate_arn")
+		certificateArn := terraform.OutputContext(t, context.Background(), ctx.TerratestTerraformOptions(), "certificate_arn")
 		out, err := awsACMClient.DescribeCertificate(context.TODO(), &acm.DescribeCertificateInput{
 			CertificateArn: aws.String(certificateArn),
 		})
@@ -76,7 +76,7 @@ func TestComposableComplete(t *testing.T, ctx types.TestContext) {
 
 func TestComposableCompleteReadOnly(t *testing.T, ctx types.TestContext) {
 	awsACMClient := acm.NewFromConfig(GetAWSConfig(t))
-	certificateArn := terraform.Output(t, ctx.TerratestTerraformOptions(), "certificate_arn")
+	certificateArn := terraform.OutputContext(t, context.Background(), ctx.TerratestTerraformOptions(), "certificate_arn")
 
 	out, err := awsACMClient.DescribeCertificate(context.TODO(), &acm.DescribeCertificateInput{
 		CertificateArn: aws.String(certificateArn),
